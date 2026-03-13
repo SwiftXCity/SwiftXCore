@@ -32,7 +32,7 @@ import PackageDescription
 let package = Package(
     name: "MySwiftServer",
     dependencies: [
-        .package(url: "https://github.com/your-org/swiftx-core.git", from: "1.0.0")
+        .package(url: "https://github.com/SwiftXCity/SwiftXCore.git", from: "1.0.0")
     ],
     targets: [
         .executableTarget(
