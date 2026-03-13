@@ -37,7 +37,7 @@ SwiftX Core uses a non-blocking, multi-threaded event loop model similar to an N
 
 ## Building and Testing
 
-1.  **Clone the repository**: `git clone https://github.com/your-org/swiftx-core.git`
+1.  **Clone the repository**: `git clone https://github.com/SwiftXCity/SwiftXCore.git`
 2.  **Build (Always use Release mode for actual testing)**: 
     ```bash
     swift build -c release
