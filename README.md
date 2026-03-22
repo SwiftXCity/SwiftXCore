@@ -8,6 +8,8 @@ We bypass standard blocking APIs and memory-heavy allocations by writing directl
 
 Whether you are on **macOS**, **Windows**, or **Linux**, SwiftX Core will scale horizontally to saturate all your CPU cores.
 
+![Platforms](https://img.shields.io/badge/Platforms-macOS%20%7C%20Linux%20%7C%20Windows-blue)
+![Swift](https://img.shields.io/badge/Swift-6.2%20%7C%206.1%20%7C%206.0-orange)
 ---
 
 ## ⚡ Key Features
