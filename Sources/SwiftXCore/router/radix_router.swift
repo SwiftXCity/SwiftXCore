@@ -33,6 +33,9 @@ public final class RadixRouter: @unchecked Sendable {
                 key = ":"
                 paramName = String(segment.dropFirst())
                 isDynamic = true
+            } else if segment == "*" {
+                key = "*"
+                isDynamic = true
             } else {
                 key = String(segment)
             }
@@ -71,8 +74,6 @@ public final class RadixRouter: @unchecked Sendable {
         var current = root
         var params: [String: String] = [:]
 
-        // Using a lock-free approach for lookup if we can assume no mutations
-        // But for safety let's use the current structure
         for segment in segments {
             let s = String(segment)
             if let next = current.children[s] {
@@ -82,11 +83,19 @@ public final class RadixRouter: @unchecked Sendable {
                     params[paramName] = s
                 }
                 current = next
+            } else if let next = current.children["*"] {
+                return (next.handler, params)
             } else {
                 return (nil, [:])
             }
         }
 
-        return (current.handler, params)
+        if let handler = current.handler {
+            return (handler, params)
+        } else if let next = current.children["*"] {
+            return (next.handler, params)
+        } else {
+            return (nil, [:])
+        }
     }
 }

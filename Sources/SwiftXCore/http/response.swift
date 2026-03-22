@@ -26,4 +26,11 @@ public struct Response: Sendable {
         }
         return Response(status: status, headers: headers, body: body)
     }
+
+    public static func html(_ html: String, status: Int = 200) -> Response {
+        let body = Data(html.utf8)
+        var headers = ["Content-Type": "text/html"]
+        headers["Content-Length"] = "\(body.count)"
+        return Response(status: status, headers: headers, body: body)
+    }
 }

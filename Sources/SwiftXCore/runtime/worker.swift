@@ -56,7 +56,6 @@ public final class Worker: @unchecked Sendable {
 
     private func runLoop() {
         while running {
-            // Under high load, we want to decrease timeout to 1ms or 0
             let events = ioBackend.poll(timeout: 1)
             
             if !events.isEmpty {
@@ -65,12 +64,10 @@ public final class Worker: @unchecked Sendable {
                 }
             }
             
-            // Only check suspended tasks if there are any, to avoid Date() syscalls
             if !suspendedTasks.isEmpty {
                 checkSuspendedTasks()
             }
             
-            // Drain manual queue
             while let _ = queue.pop() {}
         }
     }
@@ -138,19 +135,17 @@ public final class Worker: @unchecked Sendable {
             if let (request, consumed) = HTTPParser.scanRequest(data: data) {
                 conn.buffer.consume(count: consumed)
                 
-                // Fast path for routing
                 let (handler, params) = router.lookup(path: request.path)
                 if let handler = handler {
                     let task = Task(connection: conn) { _, ctx in
-                        // We pass the already parsed request and params
-                        // In a real framework, we'd wrap this better
                         var reqWithParams = request
                         reqWithParams.params = params
                         return handler(reqWithParams, ctx)
                     }
                     executeTask(task, request: request)
                 } else {
-                    let response = Response(status: 404, headers: ["Content-Type": "text/plain"], body: Data("404 Not Found".utf8))
+                    // FIX: Use Response.text to ensure Content-Length is added! (Solves infinite loading)
+                    let response = Response.text("404 Not Found", status: 404)
                     conn.send(data: HTTPEncoder.encode(response: response))
                 }
             } else {
